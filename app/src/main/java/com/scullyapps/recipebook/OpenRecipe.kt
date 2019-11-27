@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
+import com.scullyapps.recipebook.data.Ingredient
+import com.scullyapps.recipebook.data.Recipe
 import com.scullyapps.recipebook.prompts.IngredientDialog
 import com.scullyapps.recipebook.prompts.RatingDialog
 import com.scullyapps.recipebook.widgets.IngredientView
@@ -24,8 +26,11 @@ class OpenRecipe : AppCompatActivity() {
 
 
     var rating = 0.0f
-
     var edited = false
+
+    var ingredients = arrayListOf<Ingredient>()
+
+    lateinit var recipe : Recipe
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,57 +40,55 @@ class OpenRecipe : AppCompatActivity() {
         supportActionBar?.hide()
 
         rating_bar.setIsIndicator(true)
-        rating_bar.rating = 5.0f
 
-        val projection = arrayOf(
-            Contract.RECIPE._ID,
-            Contract.RECIPE.NAME,
-            Contract.RECIPE.INSTRUCTIONS,
-            Contract.RECIPE.RATING
-        )
+        recipe = intent.extras?.getParcelable("recipe")!!
 
-        val c = contentResolver.query(Contract.URECIPE, projection, null, null, null)
+        if(recipe == null) {
+            Log.e("OpenRecipe", "How have we not got a parcel? Something is terrible broken!")
+            System.exit(1)
+        }
 
-        if(c == null)
-            return
+        recipe_name.text = recipe.name
+        rating_bar.rating = recipe.rating.toFloat()
+        text_instructions.text.insert(0, recipe.description)
 
 
-
-
-
-
-
-
-
-
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
-        layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
 
         setClickListener()
 
     }
 
+
+    fun loadIngredients() {
+
+        val projection = arrayOf(
+            Contract.INGREDIENTS._ID,
+            Contract.INGREDIENTS.NAME
+        )
+
+        val c = contentResolver.query(Contract.URECIPE, projection, null, null, null)
+    }
+
     fun applyRating(r : Float) {
+
+        rating = r
+
         // if we're modifying the rating, then we must let the activity know we've updated details
         if(rating_bar.rating != r)
-            edited = true
+            setSaveable()
 
         // change our class-wide rating variable, and the actual view
-        rating = r
         rating_bar.rating = r
+    }
+
+    fun setSaveable() {
+        if(makeRecipe() != recipe) {
+            edited = true
+            save_recipe.isEnabled = true
+        } else {
+            edited = false
+            save_recipe.isEnabled = false
+        }
     }
 
 
@@ -105,7 +108,7 @@ class OpenRecipe : AppCompatActivity() {
                     applyRating(dialog.r.rating)
                     dialog.cancel()
                 }
-                
+
                 dialog.show()
 
                 return v?.onTouchEvent(event) ?: true
@@ -122,6 +125,10 @@ class OpenRecipe : AppCompatActivity() {
 
             dialog.show()
         }
+    }
+
+    fun makeRecipe() : Recipe {
+        return Recipe(recipe.id, recipe.name, text_instructions.text.toString(), this.rating.toInt())
     }
 
 }

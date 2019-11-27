@@ -49,6 +49,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <Button
+                android:id="@+id/save_recipe"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="Save!" />
+
             <TextView
                 android:id="@+id/header_rating"
                 android:layout_width="match_parent"

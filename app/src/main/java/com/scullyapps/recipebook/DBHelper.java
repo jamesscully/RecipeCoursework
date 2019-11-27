@@ -8,8 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DBHelper extends SQLiteOpenHelper {
+
     public DBHelper(Context context) {
-        super(context, "RecipesDB", null, 1);
+        super(context, "RecipesDB", null, 2);
     }
 
 
@@ -32,11 +33,31 @@ public class DBHelper extends SQLiteOpenHelper {
                                             "CONSTRAINT fk1 FOREIGN KEY (recipe_id) REFERENCES recipes (_id)," +
                                             "CONSTRAINT fk2 FOREIGN KEY (ingredient_id) REFERENCES ingredients (_id)," +
                                             "CONSTRAINT _id PRIMARY KEY (recipe_id, ingredient_id));");
+
+        addTestData(sqLiteDatabase);
+    }
+
+    public void addTestData(SQLiteDatabase db) {
+        db.execSQL("INSERT INTO recipes(name, instructions, rating) VALUES (\"Pasta\", \"Boil things\", 5)");
+        db.execSQL("INSERT INTO recipes(name, instructions, rating) VALUES (\"Beef Burger\", \"Fry\", 2)");
+
+        db.execSQL("INSERT INTO ingredients(ingredientname) VALUES (\"Salt\")");
+        db.execSQL("INSERT INTO ingredients(ingredientname) VALUES (\"Beef Patty\")");
+
+        db.execSQL("INSERT INTO recipe_ingredients(recipe_id, ingredient_id) VALUES (1,1)");
+        db.execSQL("INSERT INTO recipe_ingredients(recipe_id, ingredient_id) VALUES (2,2)");
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        if(i > i1) {
+            sqLiteDatabase.execSQL("DROP TABLE recipes");
+            sqLiteDatabase.execSQL("DROP TABLE ingredients");
+            sqLiteDatabase.execSQL("DROP TABLE recipe_ingredients");
 
+            onCreate(sqLiteDatabase);
+        }
     }
 
 

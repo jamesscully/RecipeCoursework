@@ -1,6 +1,7 @@
 package com.scullyapps.recipebook
 
 import android.content.Intent
+import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.scullyapps.recipebook.data.Recipe
@@ -34,10 +35,10 @@ class MainActivity : AppCompatActivity() {
 
         if(c != null) {
             c.moveToFirst()
-            recipes.add(Recipe(c))
+            recipes.add(recipeFromCursor(c))
 
             while (c.moveToNext()) {
-                recipes.add(Recipe(c))
+                recipes.add(recipeFromCursor(c))
             }
         }
 
@@ -47,12 +48,23 @@ class MainActivity : AppCompatActivity() {
 
             add.setOnClickListener {
                 intent.putExtra("recipe", r)
+                startActivity(intent)
             }
 
             recipes_holder.addView(add)
         }
 
 
-        //startActivity(intent)
     }
+
+
+    fun recipeFromCursor(c : Cursor) : Recipe {
+        return Recipe(
+            c.getInt(0),
+            c.getString(1),
+            c.getString(2),
+            c.getInt(3)
+        )
+    }
+
 }
