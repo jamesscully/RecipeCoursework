@@ -12,6 +12,12 @@ class MainActivity : AppCompatActivity() {
 
         val intent = Intent(this, OpenRecipe::class.java)
 
+        // generate databases
+        val db = DBHelper(this)
+        val wdb = db.writableDatabase
+        wdb.close()
+        db.close()
+
         startActivity(intent)
     }
 }
