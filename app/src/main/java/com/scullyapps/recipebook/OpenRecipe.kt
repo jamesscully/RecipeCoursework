@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
+import com.scullyapps.recipebook.prompts.IngredientDialog
 import com.scullyapps.recipebook.prompts.RatingDialog
 import com.scullyapps.recipebook.widgets.IngredientView
 import kotlinx.android.synthetic.main.activity_open_recipe.*
@@ -92,6 +93,17 @@ class OpenRecipe : AppCompatActivity() {
                 return v?.onTouchEvent(event) ?: true
             }
         })
+
+        add_ingredient.setOnClickListener {
+            val dialog = IngredientDialog(this)
+
+            dialog.ok.setOnClickListener {
+                print("Name of Ingredient: ${dialog.getName()}")
+                print("Amnt of Ingredient: ${dialog.getAmt()}")
+            }
+
+            dialog.show()
+        }
     }
 
 }

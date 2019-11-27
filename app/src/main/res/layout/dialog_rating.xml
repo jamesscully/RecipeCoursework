@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal"
+    android:paddingTop="24dp">
+
+    <TextView
+        android:id="@+id/dialog_rating_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Set Rating for "
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <RatingBar
+        android:id="@+id/dialog_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:numStars="5"
+        android:rating="1"
+        android:stepSize="1" />
+
+    <Button
+        android:id="@+id/dialog_rating_ok"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="Rate" />
+</FrameLayout>
