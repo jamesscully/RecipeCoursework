@@ -56,6 +56,8 @@ class OpenRecipe : AppCompatActivity() {
 
 
 
+
+
         layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
         layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
         layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
