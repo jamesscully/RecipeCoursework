@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
+import com.scullyapps.recipebook.prompts.RatingDialog
 import com.scullyapps.recipebook.widgets.IngredientView
 import kotlinx.android.synthetic.main.activity_open_recipe.*
 import kotlinx.android.synthetic.main.dialog_rating.*
@@ -79,26 +80,13 @@ class OpenRecipe : AppCompatActivity() {
         rating_bar.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
 
-                val dialog = Dialog(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+                val dialog = RatingDialog(context, "Pot Noodle", rating_bar.rating)
 
-                dialog.setContentView(R.layout.dialog_rating)
-
-                // we'll want an easily dismissable dialog
-                dialog.setCancelable(true)
-
-                dialog.window?.setBackgroundDrawableResource(R.drawable.bdr_soft)
-
-                // r = ratingbar, ok = rate button
-                val r = dialog.findViewById<RatingBar>(R.id.dialog_rating)
-                val ok = dialog.findViewById<Button>(R.id.dialog_rating_ok)
-
-                r.rating = rating_bar.rating
-
-                ok.setOnClickListener {
-                    applyRating(r.rating)
+                dialog.ok.setOnClickListener {
+                    rating_bar.rating = dialog.r.rating
                     dialog.cancel()
                 }
-
+                
                 dialog.show()
 
                 return v?.onTouchEvent(event) ?: true
