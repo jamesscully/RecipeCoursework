@@ -22,6 +22,8 @@ class OpenRecipe : AppCompatActivity() {
 
     var rating = 0.0f
 
+    var edited = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +57,13 @@ class OpenRecipe : AppCompatActivity() {
     }
 
     fun applyRating(r : Float) {
+
+
+        // if we're modifying the rating, then we must let the activity know we've updated details
+        if(rating_bar.rating != r)
+            edited = true
+
+        // change our class-wide rating variable, and the actual view
         rating = r
         rating_bar.rating = r
     }
@@ -73,8 +82,13 @@ class OpenRecipe : AppCompatActivity() {
                 val dialog = Dialog(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert)
 
                 dialog.setContentView(R.layout.dialog_rating)
+
+                // we'll want an easily dismissable dialog
                 dialog.setCancelable(true)
 
+                dialog.window?.setBackgroundDrawableResource(R.drawable.bdr_soft)
+
+                // r = ratingbar, ok = rate button
                 val r = dialog.findViewById<RatingBar>(R.id.dialog_rating)
                 val ok = dialog.findViewById<Button>(R.id.dialog_rating_ok)
 
