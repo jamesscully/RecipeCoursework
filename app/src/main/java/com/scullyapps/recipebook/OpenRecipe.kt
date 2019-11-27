@@ -2,6 +2,7 @@ package com.scullyapps.recipebook
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.database.Cursor
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,6 +37,23 @@ class OpenRecipe : AppCompatActivity() {
         rating_bar.setIsIndicator(true)
         rating_bar.rating = 5.0f
 
+        val projection = arrayOf(
+            Contract.RECIPE._ID,
+            Contract.RECIPE.NAME,
+            Contract.RECIPE.INSTRUCTIONS,
+            Contract.RECIPE.RATING
+        )
+
+        val c = contentResolver.query(Contract.URECIPE, projection, null, null, null)
+
+        if(c == null)
+            return
+
+
+
+
+
+
 
 
         layout_ingredients.addView(IngredientView(this, "This is an ingredient", "1337g"))
@@ -59,8 +77,6 @@ class OpenRecipe : AppCompatActivity() {
     }
 
     fun applyRating(r : Float) {
-
-
         // if we're modifying the rating, then we must let the activity know we've updated details
         if(rating_bar.rating != r)
             edited = true
@@ -84,7 +100,7 @@ class OpenRecipe : AppCompatActivity() {
                 val dialog = RatingDialog(context, "Pot Noodle", rating_bar.rating)
 
                 dialog.ok.setOnClickListener {
-                    rating_bar.rating = dialog.r.rating
+                    applyRating(dialog.r.rating)
                     dialog.cancel()
                 }
                 

@@ -2,7 +2,9 @@ package com.scullyapps.recipebook;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.CancellationSignal;
 
@@ -13,20 +15,51 @@ public class RecipeCProvider extends ContentProvider {
 
 
     DBHelper helper;
+    SQLiteDatabase db;
+
+    private static final UriMatcher uriMatcher;
+
+
+
+
+    static {
+        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        uriMatcher.addURI(Contract.AUTHORITY, "recipes", 1);
+        uriMatcher.addURI(Contract.AUTHORITY, "recipes/#", 4);
+
+        uriMatcher.addURI(Contract.AUTHORITY, "ingredients", 2);
+        uriMatcher.addURI(Contract.AUTHORITY, "ingredients/#", 5);
+
+        uriMatcher.addURI(Contract.AUTHORITY, "recipe_ingredients", 3);
+        uriMatcher.addURI(Contract.AUTHORITY, "recipe_ingredients/#", 6);
+    }
+
+
+
 
     @Override
     public boolean onCreate() {
 
         helper = new DBHelper(this.getContext());
+        db = helper.getWritableDatabase();
 
-
-
-        return false;
+        // if the DB is not null, then we've successfully created it.
+        return db != null;
     }
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+
+        switch (uriMatcher.match(uri)) {
+            case 1:
+                return db.query("recipes", projection, selection, selectionArgs, null, null, sortOrder);
+            case 2:
+                return db.query("ingredients", projection, selection, selectionArgs, null, null, sortOrder );
+            case 3:
+                return db.query("recipe_ingredients", projection, selection, selectionArgs, null, null, sortOrder);
+        }
+
         return null;
     }
 

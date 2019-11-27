@@ -7,7 +7,12 @@ public class Contract {
     public static final String AUTHORITY = "com.scullyapps.recipebook.RecipeCProvider";
 
     // location of database
-    public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/RecipeDB");
+    public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/databases/RecipeDB/");
+
+
+    public static final Uri URECIPE = Uri.parse("content://" + AUTHORITY + "/recipes");
+    public static final String ING_TABLE     = "ingredients";
+    public static final String REC_ING_TABLE = "recipes_ingredients";
 
     public static class RECIPE {
         public static final String _ID          = "_id";
