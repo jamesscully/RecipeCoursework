@@ -1,4 +1,4 @@
-package com.scullyapps.recipebook.prompts
+package com.scullyapps.recipebook.dialogs
 
 import android.app.Dialog
 import android.content.Context

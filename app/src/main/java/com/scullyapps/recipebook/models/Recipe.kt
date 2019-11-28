@@ -1,12 +1,11 @@
-package com.scullyapps.recipebook.data
+package com.scullyapps.recipebook.models
 
 import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import com.scullyapps.recipebook.Contract
-import java.lang.Exception
+import com.scullyapps.recipebook.data.Contract
 
 data class Recipe(val id : Int, var name : String = "Default", var description : String = "Default", var rating : Int) : Parcelable {
 

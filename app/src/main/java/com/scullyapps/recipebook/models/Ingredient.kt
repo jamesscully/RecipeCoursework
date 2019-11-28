@@ -1,4 +1,4 @@
-package com.scullyapps.recipebook.data
+package com.scullyapps.recipebook.models
 
 import android.database.Cursor
 import android.os.Parcel

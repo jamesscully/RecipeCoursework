@@ -1,8 +1,7 @@
-package com.scullyapps.recipebook.prompts
+package com.scullyapps.recipebook.dialogs
 
 import android.app.Dialog
 import android.content.Context
-import android.view.View
 import android.widget.Button
 import android.widget.RatingBar
 import com.scullyapps.recipebook.R

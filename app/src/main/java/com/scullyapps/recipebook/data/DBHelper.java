@@ -1,11 +1,9 @@
-package com.scullyapps.recipebook;
+package com.scullyapps.recipebook.data;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -72,6 +70,18 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return -1;
+    }
+
+    public boolean doesIngredAssociate(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM recipe_ingredients WHERE ingredient_id=\"" + id + "\"", null);
+
+        boolean exists = c.getCount() > 0;
+
+        c.close();
+
+        return exists;
+
     }
 
     public Cursor doesIngredExist(String ingredient) {

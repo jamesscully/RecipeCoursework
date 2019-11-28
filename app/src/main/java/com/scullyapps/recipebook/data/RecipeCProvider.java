@@ -1,4 +1,4 @@
-package com.scullyapps.recipebook;
+package com.scullyapps.recipebook.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -6,14 +6,11 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.CancellationSignal;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class RecipeCProvider extends ContentProvider {
-
 
     DBHelper helper;
     SQLiteDatabase db;
@@ -25,7 +22,6 @@ public class RecipeCProvider extends ContentProvider {
 
     public static final int CODE_INGREDIENTS   = 2;
     public static final int CODE_INGREDIENT_ID = 5;
-
 
     public static final int CODE_REC_INGS      = 3;
     public static final int CODE_REC_INGS_ID   = 6;
@@ -50,8 +46,6 @@ public class RecipeCProvider extends ContentProvider {
     }
 
 
-
-
     @Override
     public boolean onCreate() {
 
@@ -68,9 +62,8 @@ public class RecipeCProvider extends ContentProvider {
 
         int match = uriMatcher.match(uri);
 
-
+        // this is the ID
         String last = uri.getLastPathSegment();
-
 
         switch (match) {
             case CODE_RECIPES:
@@ -89,8 +82,6 @@ public class RecipeCProvider extends ContentProvider {
                 return db.query("ingredients", projection, "_id=" + last, null, null, null, sortOrder);
 
         }
-
-
 
         return null;
     }
@@ -125,12 +116,17 @@ public class RecipeCProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-
-
         switch (uriMatcher.match(uri)) {
             case CODE_RECIPES:
                 db.delete("recipes", "_id=" + s, null);
                 db.delete("recipe_ingredients", "recipe_id=" + s, null);
+                break;
+            case CODE_INGREDIENTS:
+                db.delete("ingredients", "_id=" + s, null);
+                break;
+
+            case CODE_REC_INGS:
+                db.delete("recipe_ingredients", "ingredient_id=" + s, null);
                 break;
         }
 
@@ -141,10 +137,8 @@ public class RecipeCProvider extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
 
         if(uriMatcher.match(uri) == CODE_RECIPES) {
-
             db.update("recipes", contentValues, s, strings);
             System.out.println("Updating recipes");
-
         }
 
         return 0;

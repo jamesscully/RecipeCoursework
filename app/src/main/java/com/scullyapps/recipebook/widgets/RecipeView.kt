@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.scullyapps.recipebook.R
-import com.scullyapps.recipebook.data.Recipe
+import com.scullyapps.recipebook.models.Recipe
 import kotlinx.android.synthetic.main.widget_recipeview.view.*
 
 class RecipeView(context: Context, recipe : Recipe) : LinearLayout(context) {

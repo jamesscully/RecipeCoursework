@@ -11,12 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ListIngredients">
+        <activity android:name=".activities.ListIngredientsActivity">
 
         </activity>
-        <activity android:name=".OpenRecipe" />
+        <activity android:name=".activities.OpenRecipeActivity" />
         <activity android:name=".ListRecipes" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,10 +24,10 @@
         </activity>
 
         <provider
-            android:authorities="com.scullyapps.recipebook.RecipeCProvider"
+            android:authorities="com.scullyapps.recipebook.data.RecipeCProvider"
             android:multiprocess="true"
             android:exported="true"
-            android:name="com.scullyapps.recipebook.RecipeCProvider">
+            android:name="com.scullyapps.recipebook.data.RecipeCProvider">
         </provider>
     </application>
 

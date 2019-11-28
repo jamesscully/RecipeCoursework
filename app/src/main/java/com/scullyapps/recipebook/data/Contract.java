@@ -1,10 +1,10 @@
-package com.scullyapps.recipebook;
+package com.scullyapps.recipebook.data;
 
 import android.net.Uri;
 
 public class Contract {
 
-    public static final String AUTHORITY = "com.scullyapps.recipebook.RecipeCProvider";
+    public static final String AUTHORITY = "com.scullyapps.recipebook.data.RecipeCProvider";
 
     // location of database
     public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/databases/RecipeDB/");

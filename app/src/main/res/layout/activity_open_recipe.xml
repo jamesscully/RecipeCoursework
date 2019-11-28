@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OpenRecipe">
+    tools:context=".activities.OpenRecipeActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -149,6 +149,7 @@
         android:layout_marginBottom="24dp"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
+        android:tint="#DF0101"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,14 +1,15 @@
-package com.scullyapps.recipebook
+package com.scullyapps.recipebook.activities
 
 import android.content.ContentValues
 import android.content.Intent
-import android.database.Cursor
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import com.scullyapps.recipebook.data.Recipe
+import androidx.appcompat.app.AppCompatActivity
+import com.scullyapps.recipebook.R
+import com.scullyapps.recipebook.data.Contract
+import com.scullyapps.recipebook.data.DBHelper
+import com.scullyapps.recipebook.models.Recipe
 import com.scullyapps.recipebook.widgets.RecipeView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -28,12 +29,16 @@ class MainActivity : AppCompatActivity() {
         // close the initial db, databases should be created.
         db.close()
 
-        val intent = Intent(this, OpenRecipe::class.java)
+        val intent = Intent(this, OpenRecipeActivity::class.java)
+
+        btn_list_ingredients.setOnClickListener {
+            startActivity(Intent(this, ListIngredientsActivity::class.java))
+        }
+
 
         // when our spinner is changed, we'll need to call the sort function.
         sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
-
             override fun onItemSelected(p0: AdapterView<*>?, view: View?, pos: Int, id: Long) {
                 sortEntries()
             }
@@ -62,11 +67,10 @@ class MainActivity : AppCompatActivity() {
         val mode = sortSpinner.selectedItem.toString()
 
         // naturally, we'll go with A-Z and High - Low as the sort options
-        if(mode == "Title") {
+        if(mode == "Title")
             sort = "name ASC"
-        } else {
+        else
             sort = "rating DESC"
-        }
 
         // dirty hack, just reload it all!
         onResume()
@@ -80,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         recipes.clear()
         recipes_holder.removeAllViews()
 
-        val intent = Intent(this, OpenRecipe::class.java)
+        val intent = Intent(this, OpenRecipeActivity::class.java)
 
         val projection = arrayOf(
             Contract.RECIPE._ID,
