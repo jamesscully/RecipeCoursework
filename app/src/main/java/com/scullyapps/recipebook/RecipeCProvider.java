@@ -20,19 +20,27 @@ public class RecipeCProvider extends ContentProvider {
 
     private static final UriMatcher uriMatcher;
 
+    public static final int CODE_RECIPES       = 1;
+    public static final int CODE_RECIPE_ID     = 4;
 
+    public static final int CODE_INGREDIENTS   = 2;
+    public static final int CODE_INGREDIENT_ID = 5;
+
+
+    public static final int CODE_REC_INGS      = 3;
+    public static final int CODE_REC_INGS_ID   = 6;
 
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(Contract.AUTHORITY, "recipes", 1);
-        uriMatcher.addURI(Contract.AUTHORITY, "recipes/#", 4);
+        uriMatcher.addURI(Contract.AUTHORITY, "recipes", CODE_RECIPES);
+        uriMatcher.addURI(Contract.AUTHORITY, "recipes/#", CODE_RECIPE_ID);
 
-        uriMatcher.addURI(Contract.AUTHORITY, "ingredients", 2);
-        uriMatcher.addURI(Contract.AUTHORITY, "ingredients/#", 5);
+        uriMatcher.addURI(Contract.AUTHORITY, "ingredients", CODE_INGREDIENTS);
+        uriMatcher.addURI(Contract.AUTHORITY, "ingredients/#", CODE_INGREDIENT_ID);
 
-        uriMatcher.addURI(Contract.AUTHORITY, "recipe_ingredients", 3);
-        uriMatcher.addURI(Contract.AUTHORITY, "recipe_ingredients/#", 6);
+        uriMatcher.addURI(Contract.AUTHORITY, "recipe_ingredients", CODE_REC_INGS );
+        uriMatcher.addURI(Contract.AUTHORITY, "recipe_ingredients/#", CODE_REC_INGS_ID);
     }
 
 
@@ -63,20 +71,26 @@ public class RecipeCProvider extends ContentProvider {
 
         String last = uri.getLastPathSegment();
 
+
         switch (match) {
-            case 1:
+            case CODE_RECIPES:
                 return db.query("recipes", projection, selection, selectionArgs, null, null, sortOrder);
-            case 2:
+
+            case CODE_INGREDIENTS:
                 return db.query("ingredients", projection, selection, selectionArgs, null, null, sortOrder );
-            case 3:
-                return db.rawQuery("select r._id as recipe_id, r.name, ri.ingredient_id, i.ingredientname "+"from recipes r "+"join recipe_ingredients ri on (r._id = ri.recipe_id)"+"join ingredients i on (ri.ingredient_id = i._id) where r._id == ?", new String[] { selection });
-            case 4:
+
+            case CODE_REC_INGS :
+                return db.rawQuery("SELECT r._id AS recipe_id, r.name, ri.ingredient_id, i.ingredientname FROM recipes r JOIN recipe_ingredients ri ON (r._id = ri.recipe_id) JOIN ingredients i ON (ri.ingredient_id = i._id) WHERE r._id == ?", new String[] { selection });
+
+            case CODE_RECIPE_ID:
                 return db.query("recipes", projection, "_id=" + last, null, null, null, sortOrder);
-            case 5:
+
+            case CODE_INGREDIENT_ID:
                 return db.query("ingredients", projection, "_id=" + last, null, null, null, sortOrder);
 
-
         }
+
+
 
         return null;
     }
@@ -94,17 +108,14 @@ public class RecipeCProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
 
-        String TABLE = "";
-        long   id    = 0;
-
         switch (uriMatcher.match(uri)) {
-            case 1:
+            case CODE_RECIPES:
                 return Contract.fromId(Contract.ALL_RECIPES, db.insert("recipes", null, contentValues));
 
-            case 2:
+            case CODE_INGREDIENTS:
                 return Contract.fromId(Contract.ALL_INGREDIENTS, db.insert("ingredients", null, contentValues));
 
-            case 3:
+            case CODE_REC_INGS :
                 db.insert("recipe_ingredients", null, contentValues);
                 break;
         }
@@ -114,13 +125,22 @@ public class RecipeCProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+
+
+        switch (uriMatcher.match(uri)) {
+            case CODE_RECIPES:
+                db.delete("recipes", "_id=" + s, null);
+                db.delete("recipe_ingredients", "recipe_id=" + s, null);
+                break;
+        }
+
         return 0;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
 
-        if(uriMatcher.match(uri) == 1) {
+        if(uriMatcher.match(uri) == CODE_RECIPES) {
 
             db.update("recipes", contentValues, s, strings);
             System.out.println("Updating recipes");

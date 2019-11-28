@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         val intent = Intent(this, OpenRecipe::class.java)
 
+        // when our spinner is changed, we'll need to call the sort function.
         sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
 
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     fun sortEntries() {
         val mode = sortSpinner.selectedItem.toString()
 
+        // naturally, we'll go with A-Z and High - Low as the sort options
         if(mode == "Title") {
             sort = "name ASC"
         } else {

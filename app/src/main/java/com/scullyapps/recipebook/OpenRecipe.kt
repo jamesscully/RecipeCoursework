@@ -24,13 +24,9 @@ class OpenRecipe : AppCompatActivity() {
 
     lateinit var recipe : Recipe
 
-    var creating = false
-
     var edited = false
 
-
     // these hold the data of the recipe stored within this activity, rather than directly modifying recipe
-
     var name = ""
     var instructions = ""
     var rating = 0.0f
@@ -50,12 +46,6 @@ class OpenRecipe : AppCompatActivity() {
         rating_bar.setIsIndicator(true)
 
         recipe = intent.extras?.getParcelable("recipe")!!
-        creating = intent.extras?.getBoolean("new", false)!!
-
-        if(recipe == null) {
-            Log.e("OpenRecipe", "How have we not got a parcel? Something is terribly broken!")
-            exitProcess(1)
-        }
 
         setDefaultValues()
 
@@ -164,10 +154,8 @@ class OpenRecipe : AppCompatActivity() {
     fun checkSaveState() {
         if(makeRecipe() != recipe || newIngredients.size > 0) {
             save_recipe.isEnabled = true
-            edited = true
         } else {
             save_recipe.isEnabled = false
-            edited = false
         }
     }
 
@@ -193,6 +181,23 @@ class OpenRecipe : AppCompatActivity() {
                 checkSaveState()
             }
         })
+
+
+        btn_delete.setOnClickListener {
+            val build = AlertDialog.Builder(this)
+
+            build.setMessage("Are you sure you wish to delete ${name}?")
+            build.setPositiveButton("Delete", { dialogInterface, i ->
+                delete()
+                dialogInterface.cancel()
+            })
+
+            build.setNegativeButton("No", { dialogInterface, i ->  dialogInterface.cancel()})
+            build.setCancelable(true)
+
+            build.show()
+
+        }
 
 
         // rating bar inherits from an AbsSeekBar, which utilizes a touchlistener
@@ -258,7 +263,9 @@ class OpenRecipe : AppCompatActivity() {
         creating = false
     }
 
+    fun delete() {
+        contentResolver.delete(Contract.ALL_RECIPES, "${recipe.id}", null)
+        finish()
+    }
+
 }
-
-
-
