@@ -29,6 +29,14 @@ class RatingDialog(context: Context, recipeName : String, currentRate : Float) :
 
         // sets our current rating for the recipe
         r.rating = currentRate
+
+
+        r.setOnRatingBarChangeListener { ratingBar, fl, b ->
+            if(ratingBar.rating < 1.0f) {
+                ratingBar.rating = 1.0f
+            }
+        }
+
     }
 
 

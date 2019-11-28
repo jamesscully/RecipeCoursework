@@ -84,6 +84,20 @@ public class RecipeCProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
+
+        switch (uriMatcher.match(uri)) {
+            case 1:
+                break;
+
+            case 2:
+                db.insert("ingredients", null, contentValues);
+                break;
+
+            case 3:
+                db.insert("recipe_ingredients", null, contentValues);
+                break;
+        }
+
         return null;
     }
 

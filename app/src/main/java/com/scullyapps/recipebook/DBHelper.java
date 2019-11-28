@@ -61,17 +61,27 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-
-    public boolean doesIngredExist(String ingredient) {
+    public int getIdByName(String name) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM ingredients WHERE ingredientName=" + ingredient, null);
+
+        Cursor c = db.rawQuery("SELECT _id FROM ingredients WHERE ingredientName=\"" + name + "\"", null);
 
         if(c.getCount() > 0) {
-            db.close();
-            c.close();
-            return true;
+            c.moveToFirst();
+            return c.getInt(0);
         }
-        return false;
+
+        return -1;
+    }
+
+    public Cursor doesIngredExist(String ingredient) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM ingredients WHERE ingredientName=\"" + ingredient + "\"", null);
+
+        if(c.getCount() > 0) {
+            return c;
+        }
+        return null;
     }
 
 

@@ -80,6 +80,7 @@
                 android:background="#f0f0f0"
                 android:ems="10"
                 android:gravity="start|top"
+                android:hint="Enter your instructions here e.g. \n - Add 200g sugar \n - Mix with 2 eggs \n - ??? \n - Profit"
                 android:inputType="textMultiLine"
                 android:padding="8dp" />
 
