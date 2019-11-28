@@ -2,6 +2,8 @@ package com.scullyapps.recipebook
 
 import android.content.ContentValues
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -11,6 +13,7 @@ import com.scullyapps.recipebook.data.Ingredient
 import com.scullyapps.recipebook.data.Recipe
 import com.scullyapps.recipebook.prompts.IngredientDialog
 import com.scullyapps.recipebook.prompts.RatingDialog
+import com.scullyapps.recipebook.widgets.IngredientView
 import kotlinx.android.synthetic.main.activity_open_recipe.*
 
 // this class is used to rate, delete or edit an activity.
@@ -20,6 +23,8 @@ class OpenRecipe : AppCompatActivity() {
 
     var rating = 0.0f
     var edited = false
+
+    var instructions = ""
 
     var ingredients = arrayListOf<Ingredient>()
 
@@ -42,12 +47,16 @@ class OpenRecipe : AppCompatActivity() {
         }
 
         recipe_name.text = recipe.name
-        rating_bar.rating = recipe.rating.toFloat()
-        text_instructions.text.insert(0, recipe.description)
 
+        rating_bar.rating = recipe.rating.toFloat()
+
+        text_instructions.text.insert(0, recipe.description)
+        instructions = recipe.description
 
 
         setListeners()
+
+        loadIngredients()
 
     }
 
@@ -59,9 +68,20 @@ class OpenRecipe : AppCompatActivity() {
             Contract.INGREDIENTS.NAME
         )
 
+        val c = contentResolver.query(Contract.REC_ING_TABLE, projection, recipe.id.toString(), null, null)
 
+        if(c == null) {
+            return
+        }
 
-        val c = contentResolver.query(Contract.ALL_RECIPES, projection, null, null, null)
+        c.moveToFirst()
+
+        while(!c.isAfterLast) {
+            ingredients.add(Ingredient(c.getInt(0), c.getString(3)))
+            layout_ingredients.addView(IngredientView(this, c.getString(3), "Amount"))
+
+            c.moveToNext()
+        }
     }
 
     fun applyRating(r : Float) {
@@ -92,9 +112,14 @@ class OpenRecipe : AppCompatActivity() {
         val context = this
 
 
-
-
-
+        text_instructions.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                instructions = p0.toString()
+                setSaveable()
+            }
+        })
 
 
         // rating bar inherits from a AbsSeekBar, which utilizes a touchlistener
@@ -102,8 +127,7 @@ class OpenRecipe : AppCompatActivity() {
 
         rating_bar.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-
-                val dialog = RatingDialog(context, "Pot Noodle", rating_bar.rating)
+                val dialog = RatingDialog(context, recipe.name, rating_bar.rating)
 
                 dialog.ok.setOnClickListener {
                     applyRating(dialog.r.rating)
@@ -111,7 +135,6 @@ class OpenRecipe : AppCompatActivity() {
                 }
 
                 dialog.show()
-
                 return v?.onTouchEvent(event) ?: true
             }
         })

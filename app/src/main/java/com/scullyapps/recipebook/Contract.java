@@ -10,9 +10,9 @@ public class Contract {
     public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/databases/RecipeDB/");
 
 
-    public static final Uri ALL_RECIPES = Uri.parse("content://" + AUTHORITY + "/recipes");
-    public static final String ALL_INGREDIENTS = "ingredients";
-    public static final String REC_ING_TABLE = "recipes_ingredients";
+    public static final Uri ALL_RECIPES     = Uri.parse("content://" + AUTHORITY + "/recipes");
+    public static final Uri ALL_INGREDIENTS = Uri.parse("content://" + AUTHORITY + "/ingredients");
+    public static final Uri REC_ING_TABLE   = Uri.parse("content://" + AUTHORITY + "/recipe_ingredients");
 
     public static Uri setId(Uri uri, int id) {
         return Uri.parse(uri.getPath() + "/" + id);

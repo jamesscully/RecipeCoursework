@@ -62,7 +62,7 @@ public class RecipeCProvider extends ContentProvider {
             case 2:
                 return db.query("ingredients", projection, selection, selectionArgs, null, null, sortOrder );
             case 3:
-                return db.query("recipe_ingredients", projection, selection, selectionArgs, null, null, sortOrder);
+                return db.rawQuery("select r._id as recipe_id, r.name, ri.ingredient_id, i.ingredientname "+"from recipes r "+"join recipe_ingredients ri on (r._id = ri.recipe_id)"+"join ingredients i on (ri.ingredient_id = i._id) where r._id == ?", new String[] { selection });
             case 4:
                 String last = uri.getLastPathSegment();
                 Log.d("DBHELP", last);

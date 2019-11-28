@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+
+        // we'll want to remove all views, and currently stored recipes, so we can refresh them.
         recipes.clear()
         recipes_holder.removeAllViews()
 
