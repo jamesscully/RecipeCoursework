@@ -76,6 +76,9 @@ class OpenRecipe : AppCompatActivity() {
 
     fun loadIngredients() {
 
+        newIngredients.clear()
+        layout_ingredients.removeAllViews()
+
         val projection = arrayOf(
             Contract.INGREDIENTS._ID,
             Contract.INGREDIENTS.NAME
@@ -156,10 +159,8 @@ class OpenRecipe : AppCompatActivity() {
     // if we've edited/added anything, show the save button
     fun checkSaveState() {
         if(makeRecipe() != recipe || newIngredients.size > 0) {
-            edited = true
             save_recipe.isEnabled = true
         } else {
-            edited = false
             save_recipe.isEnabled = false
         }
     }
@@ -188,7 +189,7 @@ class OpenRecipe : AppCompatActivity() {
         })
 
 
-        // rating bar inherits from a AbsSeekBar, which utilizes a touchlistener
+        // rating bar inherits from an AbsSeekBar, which utilizes a touchlistener
         // found: https://stackoverflow.com/a/4010379
 
         rating_bar.setOnTouchListener(object : View.OnTouchListener {
@@ -216,8 +217,6 @@ class OpenRecipe : AppCompatActivity() {
                 dialog.cancel()
             }
 
-
-
             dialog.show()
         }
 
@@ -230,14 +229,14 @@ class OpenRecipe : AppCompatActivity() {
 
             contentResolver.update(Contract.ALL_RECIPES, cv, "_id=?", arrayOf("${recipe.id}"))
 
-
-            for(s in newIngredients) {
+            for(s in newIngredients)
                 addNewIngredient(s)
-            }
-
 
             // since we've just saved, re-new the recipe and disable our save button
             recipe = makeRecipe()
+
+            // reload our ingredients - this function removes and adds again
+            loadIngredients()
 
             checkSaveState()
         }

@@ -1,5 +1,6 @@
 package com.scullyapps.recipebook
 
+import android.content.ContentValues
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
@@ -19,16 +20,49 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // close the initial db, databases should be created.
+        db.close()
 
-        // generate databases
+        val intent = Intent(this, OpenRecipe::class.java)
 
 
+        btn_new_recipe.setOnClickListener {
+            val name = "New Recipe"
 
+            val cv = ContentValues()
+
+            cv.put("name", name)
+            cv.put("instructions", "")
+            cv.put("rating", 1)
+
+            val x = contentResolver.insert(Contract.ALL_RECIPES, cv)
+
+            print("We've got ${x}")
+
+
+        }
+
+
+        val projection = arrayOf(
+            Contract.RECIPE._ID,
+            Contract.RECIPE.NAME,
+            Contract.RECIPE.INSTRUCTIONS,
+            Contract.RECIPE.RATING
+        )
+
+        val x = contentResolver.query(Uri.parse(Contract.ALL_RECIPES.toString() + "/2"), projection, null, null, null)
+
+        x?.moveToFirst()
+
+
+        print(x?.getString(0))
 
     }
 
+    // used both in initial startup, and when we return from editing
     override fun onResume() {
         super.onResume()
+
 
 
         // we'll want to remove all views, and currently stored recipes, so we can refresh them.

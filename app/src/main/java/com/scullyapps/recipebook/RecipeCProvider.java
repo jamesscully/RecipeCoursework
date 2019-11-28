@@ -36,6 +36,12 @@ public class RecipeCProvider extends ContentProvider {
     }
 
 
+    // returns the Uri for a specific id
+    public static Uri byID(Uri uri, int id) {
+        return Uri.parse(uri.toString() + "/" + id);
+    }
+
+
 
 
     @Override
@@ -54,7 +60,8 @@ public class RecipeCProvider extends ContentProvider {
 
         int match = uriMatcher.match(uri);
 
-        Log.d("CP", "Using uri: " + uri.getPath() + "match = " + match);
+
+        String last = uri.getLastPathSegment();
 
         switch (match) {
             case 1:
@@ -64,9 +71,11 @@ public class RecipeCProvider extends ContentProvider {
             case 3:
                 return db.rawQuery("select r._id as recipe_id, r.name, ri.ingredient_id, i.ingredientname "+"from recipes r "+"join recipe_ingredients ri on (r._id = ri.recipe_id)"+"join ingredients i on (ri.ingredient_id = i._id) where r._id == ?", new String[] { selection });
             case 4:
-                String last = uri.getLastPathSegment();
-                Log.d("DBHELP", last);
-                break;
+                return db.query("recipes", projection, "_id=" + last, null, null, null, sortOrder);
+            case 5:
+                return db.query("ingredients", projection, "_id=" + last, null, null, null, sortOrder);
+            
+
         }
 
         return null;
@@ -87,6 +96,7 @@ public class RecipeCProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case 1:
+                db.insert("recipes", null, contentValues);
                 break;
 
             case 2:
