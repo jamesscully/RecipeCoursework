@@ -20,15 +20,18 @@ import kotlinx.android.synthetic.main.activity_open_recipe.*
 
 class OpenRecipe : AppCompatActivity() {
 
+    lateinit var recipe : Recipe
 
-    var rating = 0.0f
     var edited = false
 
-    var instructions = ""
 
+    // these hold the data of the recipe stored within this activity, rather than directly modifying recipe
+
+    var name = ""
+    var instructions = ""
+    var rating = 0.0f
     var ingredients = arrayListOf<Ingredient>()
 
-    lateinit var recipe : Recipe
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,22 +45,29 @@ class OpenRecipe : AppCompatActivity() {
         recipe = intent.extras?.getParcelable("recipe")!!
 
         if(recipe == null) {
-            Log.e("OpenRecipe", "How have we not got a parcel? Something is terrible broken!")
+            Log.e("OpenRecipe", "How have we not got a parcel? Something is terribly broken!")
             System.exit(1)
         }
 
-        recipe_name.text = recipe.name
 
-        rating_bar.rating = recipe.rating.toFloat()
-
-        text_instructions.text.insert(0, recipe.description)
-        instructions = recipe.description
-
+        setDefaultValues()
 
         setListeners()
-
         loadIngredients()
 
+    }
+
+    // this loads the recipes values into local variables, and their needed views
+
+    fun setDefaultValues() {
+
+        recipe_name.text.insert(0, recipe.name)
+        rating_bar.rating = recipe.rating.toFloat()
+        text_instructions.text.insert(0, recipe.description)
+
+        name = recipe.name
+        instructions = recipe.description
+        rating = recipe.rating.toFloat()
     }
 
 
@@ -121,6 +131,15 @@ class OpenRecipe : AppCompatActivity() {
             }
         })
 
+        recipe_name.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                name = p0.toString()
+                setSaveable()
+            }
+        })
+
 
         // rating bar inherits from a AbsSeekBar, which utilizes a touchlistener
         // found: https://stackoverflow.com/a/4010379
@@ -153,16 +172,19 @@ class OpenRecipe : AppCompatActivity() {
         save_recipe.setOnClickListener {
             val cv = ContentValues(1)
 
-            cv.put("name", recipe.name)
+            cv.put("name", name)
             cv.put("rating", rating.toInt())
             cv.put("instructions", text_instructions.text.toString())
 
             contentResolver.update(Contract.ALL_RECIPES, cv, "_id=?", arrayOf("${recipe.id}"))
+
+            recipe = makeRecipe()
+            setSaveable()
         }
     }
 
     fun makeRecipe() : Recipe {
-        return Recipe(recipe.id, recipe.name, text_instructions.text.toString(), this.rating.toInt())
+        return Recipe(recipe.id, name, text_instructions.text.toString(), this.rating.toInt())
     }
 
 }
