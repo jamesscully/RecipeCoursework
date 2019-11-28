@@ -39,6 +39,15 @@ data class Recipe(val id : Int, var name : String = "Default", var description :
         override fun newArray(size: Int): Array<Recipe?> {
             return arrayOfNulls(size)
         }
+
+        fun fromCursor(c : Cursor) : Recipe{
+            return Recipe(
+                c.getInt(0),
+                c.getString(1),
+                c.getString(2),
+                c.getInt(3)
+            )
+        }
     }
 
 }

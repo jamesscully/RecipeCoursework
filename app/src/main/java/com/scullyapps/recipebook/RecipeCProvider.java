@@ -74,7 +74,7 @@ public class RecipeCProvider extends ContentProvider {
                 return db.query("recipes", projection, "_id=" + last, null, null, null, sortOrder);
             case 5:
                 return db.query("ingredients", projection, "_id=" + last, null, null, null, sortOrder);
-            
+
 
         }
 

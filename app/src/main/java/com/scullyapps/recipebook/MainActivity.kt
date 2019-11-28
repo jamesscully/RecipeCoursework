@@ -83,9 +83,9 @@ class MainActivity : AppCompatActivity() {
 
         if(c != null) {
             c.moveToFirst()
-            recipes.add(recipeFromCursor(c))
+            recipes.add(Recipe.fromCursor(c))
             while (c.moveToNext()) {
-                recipes.add(recipeFromCursor(c))
+                recipes.add(Recipe.fromCursor(c))
             }
         }
 
@@ -101,13 +101,5 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun recipeFromCursor(c : Cursor) : Recipe {
-        return Recipe(
-            c.getInt(0),
-            c.getString(1),
-            c.getString(2),
-            c.getInt(3)
-        )
-    }
 
 }
