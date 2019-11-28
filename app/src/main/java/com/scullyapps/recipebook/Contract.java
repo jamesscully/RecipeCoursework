@@ -14,8 +14,11 @@ public class Contract {
     public static final Uri ALL_INGREDIENTS = Uri.parse("content://" + AUTHORITY + "/ingredients");
     public static final Uri REC_ING_TABLE   = Uri.parse("content://" + AUTHORITY + "/recipe_ingredients");
 
-    public static Uri setId(Uri uri, int id) {
-        return Uri.parse(uri.getPath() + "/" + id);
+    public static Uri fromId(Uri uri, int id) {
+        return Uri.parse(uri.toString() + "/" + id);
+    }
+    public static Uri fromId(Uri uri, long id) {
+        return Uri.parse(uri.toString() + "/" + id);
     }
 
     public static class RECIPE {

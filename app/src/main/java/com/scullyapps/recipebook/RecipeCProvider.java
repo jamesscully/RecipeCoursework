@@ -94,14 +94,15 @@ public class RecipeCProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
 
+        String TABLE = "";
+        long   id    = 0;
+
         switch (uriMatcher.match(uri)) {
             case 1:
-                db.insert("recipes", null, contentValues);
-                break;
+                return Contract.fromId(Contract.ALL_RECIPES, db.insert("recipes", null, contentValues));
 
             case 2:
-                db.insert("ingredients", null, contentValues);
-                break;
+                return Contract.fromId(Contract.ALL_INGREDIENTS, db.insert("ingredients", null, contentValues));
 
             case 3:
                 db.insert("recipe_ingredients", null, contentValues);

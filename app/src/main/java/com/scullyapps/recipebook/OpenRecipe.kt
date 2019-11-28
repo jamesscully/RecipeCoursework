@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.scullyapps.recipebook.data.Ingredient
 import com.scullyapps.recipebook.data.Recipe
@@ -15,12 +16,15 @@ import com.scullyapps.recipebook.prompts.IngredientDialog
 import com.scullyapps.recipebook.prompts.RatingDialog
 import com.scullyapps.recipebook.widgets.IngredientView
 import kotlinx.android.synthetic.main.activity_open_recipe.*
+import kotlin.system.exitProcess
 
 // this class is used to rate, delete or edit an activity.
 
 class OpenRecipe : AppCompatActivity() {
 
     lateinit var recipe : Recipe
+
+    var creating = false
 
     var edited = false
 
@@ -46,12 +50,12 @@ class OpenRecipe : AppCompatActivity() {
         rating_bar.setIsIndicator(true)
 
         recipe = intent.extras?.getParcelable("recipe")!!
+        creating = intent.extras?.getBoolean("new", false)!!
 
         if(recipe == null) {
             Log.e("OpenRecipe", "How have we not got a parcel? Something is terribly broken!")
-            System.exit(1)
+            exitProcess(1)
         }
-
 
         setDefaultValues()
 
@@ -93,7 +97,7 @@ class OpenRecipe : AppCompatActivity() {
         c.moveToFirst()
 
         while(!c.isAfterLast) {
-            ingredients.add(Ingredient(c.getInt(0), c.getString(3)))
+            ingredients.add(Ingredient(c.getInt(2), c.getString(3)))
             layout_ingredients.addView(IngredientView(this, c.getString(3), "Amount"))
 
             c.moveToNext()
@@ -160,8 +164,10 @@ class OpenRecipe : AppCompatActivity() {
     fun checkSaveState() {
         if(makeRecipe() != recipe || newIngredients.size > 0) {
             save_recipe.isEnabled = true
+            edited = true
         } else {
             save_recipe.isEnabled = false
+            edited = false
         }
     }
 
@@ -221,29 +227,35 @@ class OpenRecipe : AppCompatActivity() {
         }
 
         save_recipe.setOnClickListener {
-            val cv = ContentValues(1)
-
-            cv.put("name", name)
-            cv.put("rating", rating.toInt())
-            cv.put("instructions", text_instructions.text.toString())
-
-            contentResolver.update(Contract.ALL_RECIPES, cv, "_id=?", arrayOf("${recipe.id}"))
-
-            for(s in newIngredients)
-                addNewIngredient(s)
-
-            // since we've just saved, re-new the recipe and disable our save button
-            recipe = makeRecipe()
-
-            // reload our ingredients - this function removes and adds again
-            loadIngredients()
-
-            checkSaveState()
+            save()
         }
     }
 
     fun makeRecipe() : Recipe {
         return Recipe(recipe.id, name, text_instructions.text.toString(), this.rating.toInt())
+    }
+
+    fun save() {
+        val cv = ContentValues(1)
+
+        cv.put("name", name)
+        cv.put("rating", rating.toInt())
+        cv.put("instructions", text_instructions.text.toString())
+
+        contentResolver.update(Contract.ALL_RECIPES, cv, "_id=?", arrayOf("${recipe.id}"))
+
+        for(s in newIngredients)
+            addNewIngredient(s)
+
+        // since we've just saved, re-new the recipe and disable our save button
+        recipe = makeRecipe()
+
+        // reload our ingredients - this function removes and adds again
+        loadIngredients()
+
+        checkSaveState()
+
+        creating = false
     }
 
 }

@@ -6,6 +6,8 @@ import android.database.Cursor
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import com.scullyapps.recipebook.data.Recipe
 import com.scullyapps.recipebook.widgets.RecipeView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,6 +16,9 @@ class MainActivity : AppCompatActivity() {
 
     var recipes = arrayListOf<Recipe>()
     val db = DBHelper(this)
+
+
+    var sort = "name DESC"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +30,13 @@ class MainActivity : AppCompatActivity() {
 
         val intent = Intent(this, OpenRecipe::class.java)
 
+        sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onItemSelected(p0: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+                sortEntries()
+            }
+        }
 
         btn_new_recipe.setOnClickListener {
             val name = "New Recipe"
@@ -35,35 +47,32 @@ class MainActivity : AppCompatActivity() {
             cv.put("instructions", "")
             cv.put("rating", 1)
 
-            val x = contentResolver.insert(Contract.ALL_RECIPES, cv)
+            // this will get a recipe object directly from our new inserted recipe
+            val recipe = Recipe.fromUri(contentResolver.insert(Contract.ALL_RECIPES, cv), contentResolver)
 
-            print("We've got ${x}")
+            intent.putExtra("recipe", recipe)
+            intent.putExtra("new", true)
 
+            startActivity(intent)
+        }
+    }
 
+    fun sortEntries() {
+        val mode = sortSpinner.selectedItem.toString()
+
+        if(mode == "Title") {
+            sort = "name ASC"
+        } else {
+            sort = "rating DESC"
         }
 
-
-        val projection = arrayOf(
-            Contract.RECIPE._ID,
-            Contract.RECIPE.NAME,
-            Contract.RECIPE.INSTRUCTIONS,
-            Contract.RECIPE.RATING
-        )
-
-        val x = contentResolver.query(Uri.parse(Contract.ALL_RECIPES.toString() + "/2"), projection, null, null, null)
-
-        x?.moveToFirst()
-
-
-        print(x?.getString(0))
-
+        // dirty hack, just reload it all!
+        onResume()
     }
 
     // used both in initial startup, and when we return from editing
     override fun onResume() {
         super.onResume()
-
-
 
         // we'll want to remove all views, and currently stored recipes, so we can refresh them.
         recipes.clear()
@@ -71,7 +80,6 @@ class MainActivity : AppCompatActivity() {
 
         val intent = Intent(this, OpenRecipe::class.java)
 
-
         val projection = arrayOf(
             Contract.RECIPE._ID,
             Contract.RECIPE.NAME,
@@ -79,11 +87,14 @@ class MainActivity : AppCompatActivity() {
             Contract.RECIPE.RATING
         )
 
-        val c = contentResolver.query(Contract.ALL_RECIPES, projection, null, null, null)
+        val c = contentResolver.query(Contract.ALL_RECIPES, projection, null, null, sort)
 
         if(c != null) {
             c.moveToFirst()
+
+            // Recipe.fromCursor() is static and allows for ez creation from our cursors
             recipes.add(Recipe.fromCursor(c))
+
             while (c.moveToNext()) {
                 recipes.add(Recipe.fromCursor(c))
             }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RecipeBook</string>
+
+    <string-array name="sortMode">
+        <item>Title</item>
+        <item>Rating</item>
+    </string-array>
 </resources>

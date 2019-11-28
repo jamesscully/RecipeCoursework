@@ -1,5 +1,6 @@
 package com.scullyapps.recipebook.data
 
+import android.database.Cursor
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -30,6 +31,10 @@ data class Ingredient(val id : Int, var name : String = "Default", var amount : 
 
         override fun newArray(size: Int): Array<Ingredient?> {
             return arrayOfNulls(size)
+        }
+
+        fun fromCursor(cursor: Cursor) : Ingredient {
+            return Ingredient(cursor.getInt(0), cursor.getString(3))
         }
     }
 }
