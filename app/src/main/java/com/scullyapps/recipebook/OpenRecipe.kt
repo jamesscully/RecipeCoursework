@@ -1,24 +1,17 @@
 package com.scullyapps.recipebook
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.database.Cursor
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
 import com.scullyapps.recipebook.data.Ingredient
 import com.scullyapps.recipebook.data.Recipe
 import com.scullyapps.recipebook.prompts.IngredientDialog
 import com.scullyapps.recipebook.prompts.RatingDialog
-import com.scullyapps.recipebook.widgets.IngredientView
 import kotlinx.android.synthetic.main.activity_open_recipe.*
-import kotlinx.android.synthetic.main.dialog_rating.*
 
 // this class is used to rate, delete or edit an activity.
 
@@ -54,7 +47,7 @@ class OpenRecipe : AppCompatActivity() {
 
 
 
-        setClickListener()
+        setListeners()
 
     }
 
@@ -66,7 +59,9 @@ class OpenRecipe : AppCompatActivity() {
             Contract.INGREDIENTS.NAME
         )
 
-        val c = contentResolver.query(Contract.URECIPE, projection, null, null, null)
+
+
+        val c = contentResolver.query(Contract.ALL_RECIPES, projection, null, null, null)
     }
 
     fun applyRating(r : Float) {
@@ -92,9 +87,15 @@ class OpenRecipe : AppCompatActivity() {
     }
 
 
-    fun setClickListener() {
+    fun setListeners() {
 
         val context = this
+
+
+
+
+
+
 
         // rating bar inherits from a AbsSeekBar, which utilizes a touchlistener
         // found: https://stackoverflow.com/a/4010379
@@ -124,6 +125,16 @@ class OpenRecipe : AppCompatActivity() {
             }
 
             dialog.show()
+        }
+
+        save_recipe.setOnClickListener {
+            val cv = ContentValues(1)
+
+            cv.put("name", recipe.name)
+            cv.put("rating", rating.toInt())
+            cv.put("instructions", text_instructions.text.toString())
+
+            contentResolver.update(Contract.ALL_RECIPES, cv, "_id=?", arrayOf("${recipe.id}"))
         }
     }
 

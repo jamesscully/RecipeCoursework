@@ -46,11 +46,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL("INSERT INTO recipe_ingredients(recipe_id, ingredient_id) VALUES (1,1)");
         db.execSQL("INSERT INTO recipe_ingredients(recipe_id, ingredient_id) VALUES (2,2)");
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+        // if our version has changed, we'll want to renew the tables.
         if(i > i1) {
             sqLiteDatabase.execSQL("DROP TABLE recipes");
             sqLiteDatabase.execSQL("DROP TABLE ingredients");
@@ -62,9 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public boolean doesIngredExist(String ingredient) {
-
         SQLiteDatabase db = getReadableDatabase();
-
         Cursor c = db.rawQuery("SELECT * FROM ingredients WHERE ingredientName=" + ingredient, null);
 
         if(c.getCount() > 0) {
@@ -72,8 +71,6 @@ public class DBHelper extends SQLiteOpenHelper {
             c.close();
             return true;
         }
-
-
         return false;
     }
 

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.CancellationSignal;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,13 +52,21 @@ public class RecipeCProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
 
-        switch (uriMatcher.match(uri)) {
+        int match = uriMatcher.match(uri);
+
+        Log.d("CP", "Using uri: " + uri.getPath() + "match = " + match);
+
+        switch (match) {
             case 1:
                 return db.query("recipes", projection, selection, selectionArgs, null, null, sortOrder);
             case 2:
                 return db.query("ingredients", projection, selection, selectionArgs, null, null, sortOrder );
             case 3:
                 return db.query("recipe_ingredients", projection, selection, selectionArgs, null, null, sortOrder);
+            case 4:
+                String last = uri.getLastPathSegment();
+                Log.d("DBHELP", last);
+                break;
         }
 
         return null;
@@ -85,6 +94,14 @@ public class RecipeCProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
+
+        if(uriMatcher.match(uri) == 1) {
+
+            db.update("recipes", contentValues, s, strings);
+            System.out.println("Updating recipes");
+
+        }
+
         return 0;
     }
 }

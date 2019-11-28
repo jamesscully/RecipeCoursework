@@ -2,6 +2,7 @@ package com.scullyapps.recipebook
 
 import android.content.Intent
 import android.database.Cursor
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.scullyapps.recipebook.data.Recipe
@@ -11,18 +12,29 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     var recipes = arrayListOf<Recipe>()
+    val db = DBHelper(this)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val intent = Intent(this, OpenRecipe::class.java)
 
         // generate databases
-        val db = DBHelper(this)
-        val wdb = db.writableDatabase
-        wdb.close()
-        db.close()
+
+
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        recipes.clear()
+        recipes_holder.removeAllViews()
+
+        val intent = Intent(this, OpenRecipe::class.java)
+
 
         val projection = arrayOf(
             Contract.RECIPE._ID,
@@ -31,29 +43,24 @@ class MainActivity : AppCompatActivity() {
             Contract.RECIPE.RATING
         )
 
-        val c = contentResolver.query(Contract.URECIPE, projection, null, null, null)
+        val c = contentResolver.query(Contract.ALL_RECIPES, projection, null, null, null)
 
         if(c != null) {
             c.moveToFirst()
             recipes.add(recipeFromCursor(c))
-
             while (c.moveToNext()) {
                 recipes.add(recipeFromCursor(c))
             }
         }
 
         for(r in recipes) {
-
             val add = RecipeView(this, r)
-
             add.setOnClickListener {
                 intent.putExtra("recipe", r)
                 startActivity(intent)
             }
-
             recipes_holder.addView(add)
         }
-
 
     }
 

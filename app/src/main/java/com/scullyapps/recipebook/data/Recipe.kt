@@ -18,10 +18,6 @@ data class Recipe(val id : Int, var name : String = "Default", var description :
         parcel.readInt()
     )
 
-    init {
-        // add ingredients to this class via CP
-    }
-
     var ingredients : ArrayList<Ingredient> = arrayListOf()
 
     override fun describeContents(): Int {
