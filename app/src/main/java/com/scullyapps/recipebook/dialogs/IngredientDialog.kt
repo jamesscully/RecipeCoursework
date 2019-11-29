@@ -7,7 +7,6 @@ import android.widget.EditText
 import com.scullyapps.recipebook.R
 
 class IngredientDialog(context: Context) : Dialog(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert){
-    private val TAG: String = "IngredientDialog";
 
     private val layoutID = R.layout.dialog_ingredient
 
@@ -32,7 +31,4 @@ class IngredientDialog(context: Context) : Dialog(context, R.style.ThemeOverlay_
         return txtName.text.toString()
     }
 
-    fun getAmt() : String {
-        return txtAmt.text.toString()
-    }
 }

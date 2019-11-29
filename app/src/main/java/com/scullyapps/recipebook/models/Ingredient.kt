@@ -12,8 +12,6 @@ data class Ingredient(val id : Int, var name : String = "Default", var amount : 
         parcel.readString()!!
     )
 
-    private val TAG: String = "Ingredient"
-
     override fun writeToParcel(parcel : Parcel, p1: Int) {
         parcel.writeInt(id)
         parcel.writeString(name)
@@ -33,8 +31,5 @@ data class Ingredient(val id : Int, var name : String = "Default", var amount : 
             return arrayOfNulls(size)
         }
 
-        fun fromCursor(cursor: Cursor) : Ingredient {
-            return Ingredient(cursor.getInt(0), cursor.getString(3))
-        }
     }
 }

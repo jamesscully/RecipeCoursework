@@ -8,7 +8,6 @@ import com.scullyapps.recipebook.R
 import kotlinx.android.synthetic.main.dialog_rating.*
 
 class RatingDialog(context: Context, recipeName : String, currentRate : Float) : Dialog(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert) {
-    private val TAG: String = "RatingDialog"
 
     private val layoutID = R.layout.dialog_rating
 

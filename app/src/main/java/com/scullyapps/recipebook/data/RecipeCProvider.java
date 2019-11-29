@@ -138,7 +138,6 @@ public class RecipeCProvider extends ContentProvider {
 
         if(uriMatcher.match(uri) == CODE_RECIPES) {
             db.update("recipes", contentValues, s, strings);
-            System.out.println("Updating recipes");
         }
 
         return 0;

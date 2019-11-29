@@ -9,8 +9,6 @@ import com.scullyapps.recipebook.data.Contract
 
 data class Recipe(val id : Int, var name : String = "Default", var description : String = "Default", var rating : Int) : Parcelable {
 
-    private val TAG: String = "Recipe";
-
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -20,8 +18,6 @@ data class Recipe(val id : Int, var name : String = "Default", var description :
         parcel.readString()!!,
         parcel.readInt()
     )
-
-    var ingredients : ArrayList<Ingredient> = arrayListOf()
 
     override fun describeContents(): Int {
         return 0

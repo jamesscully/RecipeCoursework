@@ -8,7 +8,6 @@ import com.scullyapps.recipebook.models.Recipe
 import kotlinx.android.synthetic.main.widget_recipeview.view.*
 
 class RecipeView(context: Context, recipe : Recipe) : LinearLayout(context) {
-    private val TAG: String = "RecipeView";
 
     init {
         LayoutInflater.from(context).inflate(R.layout.widget_recipeview, this, true)

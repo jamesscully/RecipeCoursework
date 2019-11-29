@@ -9,7 +9,6 @@ import com.scullyapps.recipebook.R
 import kotlinx.android.synthetic.main.widget_ingredientview.view.*
 
 class IngredientView(context: Context) : LinearLayout(context) {
-    private val TAG: String = "IngredientView";
 
     var btnRemove : ImageView
     var ingId : Int = -1

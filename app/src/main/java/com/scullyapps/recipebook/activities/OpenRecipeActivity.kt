@@ -29,7 +29,6 @@ class OpenRecipeActivity : AppCompatActivity() {
 
     // these hold the data of the recipe stored within this activity, rather than directly modifying recipe
     var name = ""
-    var instructions = ""
     var rating = 0.0f
     var ingredients = arrayListOf<Ingredient>()
 
@@ -42,10 +41,13 @@ class OpenRecipeActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
+        // we want our rating bar to only show, not be editable
         rating_bar.setIsIndicator(true)
 
+        // retrive recipe parcel
         recipe = intent.extras?.getParcelable("recipe")!!
 
+        // load into views
         setDefaultValues()
 
         setListeners()
@@ -73,8 +75,8 @@ class OpenRecipeActivity : AppCompatActivity() {
         // reload our ingredients - this function removes and adds again
         loadIngredients()
 
+        // finally, reset our save status
         checkSaveState()
-
     }
 
     fun delete() {
@@ -136,6 +138,7 @@ class OpenRecipeActivity : AppCompatActivity() {
 
             val ingId = c.getInt(0)
             cv.put("ingredient_id", ingId)
+
             c.close()
 
         } else {
@@ -148,9 +151,8 @@ class OpenRecipeActivity : AppCompatActivity() {
             // we'll need the newly created ingredients ID
             val newId = db.getIdByName(name)
 
-            if(newId == -1) {
+            if(newId == -1)
                 throw IllegalAccessException("newId was not set")
-            }
 
             cv.put("ingredient_id", newId)
         }
@@ -163,7 +165,7 @@ class OpenRecipeActivity : AppCompatActivity() {
          #############################
 
          THERE IS NO CONTENT-PROVIDER CODE BELOW HERE
-         There's a lot of logic behind functionality, i.e. not showing save button until edit has occurred, or Dialog code below this line
+         There's a lot of logic behind functionality, i.e. not showing save button until edit has occurred, or Dialog code below this comment
 
          #############################
     */
@@ -174,22 +176,22 @@ class OpenRecipeActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if(edited) {
             val build = AlertDialog.Builder(this)
+
             build.setMessage("You have unsaved changes, do you wish to save them?")
-            build.setPositiveButton("Save", { dialogInterface, i ->
+            build.setPositiveButton("Save")
+            { _, _ ->
                 save()
                 super.onBackPressed()
-            })
-            build.setNegativeButton("No, exit", { dialogInterface, i ->
+            }
+            build.setNegativeButton("No, exit")
+            { _, _ ->
                 super.onBackPressed()
-            })
+            }
 
             build.show()
-
-        } else {
-            super.onBackPressed()
         }
 
-
+        else super.onBackPressed()
     }
 
 
@@ -200,15 +202,11 @@ class OpenRecipeActivity : AppCompatActivity() {
         text_instructions.text.insert(0, recipe.description)
     }
 
-
-
     // sets our rating bar and checks if modified
     fun applyRating(r : Float) {
         rating_bar.rating = r
         checkSaveState()
     }
-
-
 
     // if we've edited/added anything, show/hide the save button
     fun checkSaveState() {
@@ -218,8 +216,6 @@ class OpenRecipeActivity : AppCompatActivity() {
 
 
     fun setListeners() {
-
-
 
         val txtChangeListener : TextWatcher = object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) { }
@@ -238,12 +234,12 @@ class OpenRecipeActivity : AppCompatActivity() {
             val build = AlertDialog.Builder(this)
 
                 build.setMessage("Are you sure you wish to delete ${name}?")
-                build.setPositiveButton("Delete", { dialogInterface, i ->
+                build.setPositiveButton("Delete")
+                {   d, _ ->
                     delete()
-                    dialogInterface.cancel()
-                })
-
-                build.setNegativeButton("No", { dialogInterface, i ->  dialogInterface.cancel()})
+                    d.cancel()
+                }
+                build.setNegativeButton("No") { d, _ ->  d.cancel()}
                 build.setCancelable(true)
 
             build.show()
@@ -255,11 +251,14 @@ class OpenRecipeActivity : AppCompatActivity() {
         // rating bar inherits from an AbsSeekBar, which utilizes a touchlistener
         // found: https://stackoverflow.com/a/4010379
 
+
+
         rating_bar.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 val dialog = RatingDialog(context, recipe.name, rating_bar.rating)
 
-                dialog.ok.setOnClickListener {
+                dialog.ok.setOnClickListener()
+                {
                     applyRating(dialog.r.rating)
                     dialog.cancel()
                 }
@@ -269,19 +268,22 @@ class OpenRecipeActivity : AppCompatActivity() {
             }
         })
 
+
+
         add_ingredient.setOnClickListener {
             val dialog = IngredientDialog(this)
 
             dialog.ok.setOnClickListener {
-                newIngredients.add(dialog.getName())
 
-                val view = IngredientView(this, dialog.getName(), "")
+                val name = dialog.getName()
+                val view = IngredientView(this, name, "")
 
-                view.btnRemove.setOnClickListener {
+                newIngredients.add(name)
+
+                view.btnRemove.setOnClickListener()
+                {
                     newIngredients.remove(dialog.getName())
-                    view.visibility = View.GONE
-                    edited = true
-                    checkSaveState()
+                    deleteIngredient(view)
                 }
 
                 layout_ingredients.addView(view)
@@ -293,7 +295,18 @@ class OpenRecipeActivity : AppCompatActivity() {
             dialog.show()
         }
 
-        save_recipe.setOnClickListener { save() }
+
+
+        save_recipe.setOnClickListener {
+            save()
+        }
+    }
+
+
+    fun deleteIngredient(view : View) {
+        view.visibility = View.GONE
+        edited = true
+        checkSaveState()
     }
 
     // make a recipe object from our inputs
