@@ -25,11 +25,13 @@ class IngredientView(context: Context) : LinearLayout(context) {
         btnRemove = ingred_remove
     }
 
+    // this is used to allow the deletion of ingredients from
+    // the ListIngredients activity - only if they have no assosciation to a recipe.
     fun isRemoveable(b : Boolean) {
         if(b)
-            ingred_remove.visibility = View.VISIBLE
+            btnRemove.visibility = View.VISIBLE
         else
-            ingred_remove.visibility = View.GONE
+            btnRemove.visibility = View.GONE
     }
 
 

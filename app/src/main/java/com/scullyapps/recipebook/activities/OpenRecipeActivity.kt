@@ -58,7 +58,7 @@ class OpenRecipeActivity : AppCompatActivity() {
     fun save() {
         val cv = ContentValues()
 
-        // get our entered values and store them
+        // get our entered values from input and store them
         cv.put("name", recipe_name.text.toString())
         cv.put("rating", rating_bar.rating.toInt())
         cv.put("instructions", text_instructions.text.toString())
@@ -125,6 +125,8 @@ class OpenRecipeActivity : AppCompatActivity() {
 
     fun addNewIngredient(name : String) {
         val db = DBHelper(this)
+
+        // this checks whether the ingredient we're adding to the database exists already
         val c : Cursor? = db.doesIngredExist(name)
 
         val cv = ContentValues()
@@ -132,7 +134,8 @@ class OpenRecipeActivity : AppCompatActivity() {
         // the recipe id will never change, thus we can put it in the cv
         cv.put("recipe_id", recipe.id)
 
-        // if the ingredient exists, get its id, else create an entry
+        // if the ingredient exists, get its id
+        // this is potentially useless, come to think of it!
         if(c != null) {
             c.moveToFirst()
 
@@ -246,12 +249,11 @@ class OpenRecipeActivity : AppCompatActivity() {
 
         }
 
+        // it's easiest to define our context here for reference inside of an anonymous object
         val context = this
 
         // rating bar inherits from an AbsSeekBar, which utilizes a touchlistener
         // found: https://stackoverflow.com/a/4010379
-
-
 
         rating_bar.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -295,13 +297,10 @@ class OpenRecipeActivity : AppCompatActivity() {
             dialog.show()
         }
 
-
-
         save_recipe.setOnClickListener {
             save()
         }
     }
-
 
     fun deleteIngredient(view : View) {
         view.visibility = View.GONE

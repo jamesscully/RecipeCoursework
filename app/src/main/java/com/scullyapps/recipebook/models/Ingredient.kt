@@ -4,6 +4,8 @@ import android.database.Cursor
 import android.os.Parcel
 import android.os.Parcelable
 
+// this is a data class - we only need to define the ID as we have default parameters in place.
+// in Kotlin, a data-class defines typical functions such as hashCode, equals, and makes parcels a breeze.
 data class Ingredient(val id : Int, var name : String = "Default", var amount : String = "Default") : Parcelable {
 
     constructor(parcel: Parcel) : this(

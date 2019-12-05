@@ -45,13 +45,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_new_recipe.setOnClickListener {
-            val name = "New Recipe"
 
+            // define our default values
+            val name = "New Recipe"
+            val inst = ""
+            val rate = 1
+
+
+            // load them into our ContentValues
             val cv = ContentValues()
 
             cv.put("name", name)
-            cv.put("instructions", "")
-            cv.put("rating", 1)
+            cv.put("instructions", inst)
+            cv.put("rating", rate)
 
             // this will get a recipe object directly from our new inserted recipe
             val recipe = Recipe.fromUri(contentResolver.insert(Contract.ALL_RECIPES, cv), contentResolver)
@@ -77,6 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // used both in initial startup, and when we return from editing
+    // this clears both our LinearLayout holding Recipes, and our data set of these.
     override fun onResume() {
         super.onResume()
 
