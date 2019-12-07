@@ -286,6 +286,9 @@ class OpenRecipeActivity : AppCompatActivity() {
                 {
                     newIngredients.remove(dialog.getName())
                     deleteIngredient(view)
+                    edited = true
+                    checkSaveState()
+
                 }
 
                 layout_ingredients.addView(view)
